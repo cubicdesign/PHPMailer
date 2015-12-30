@@ -447,6 +447,13 @@ class PHPMailer
     public $XMailer = '';
 
     /**
+     * Whether add angular brackets to nameless recipients
+     * to avoid SpamAssassin's "*NO_BRKTS*" rules
+     * @var boolean
+     */
+    public $addBrackets = false;
+
+    /**
      * An instance of the SMTP sender class.
      * @var SMTP
      * @access protected
@@ -1734,6 +1741,9 @@ class PHPMailer
     public function addrFormat($addr)
     {
         if (empty($addr[1])) { // No name provided
+            if ($this->addBrackets) {
+                $addr[0] = '<'.$addr[0].'>';
+            }
             return $this->secureHeader($addr[0]);
         } else {
             return $this->encodeHeader($this->secureHeader($addr[1]), 'phrase') . ' <' . $this->secureHeader(
